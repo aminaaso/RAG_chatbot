@@ -1,0 +1,493 @@
+AI SEASON
+How AI Answers
+ From Your Data
+RAG, Vector Databases, and the Future of Context 
+Engineering
+Instructor: Muhammad Mufeez
+From documents to grounded AI answers.
+AI Season Bootcamp — Session 1 AISEASON
+
+AI SEASON  GOALS AISEASON
+Today’s Goal: Understand This RAG Pipeline
+By the end, you will understand:
+• How documents become searchable 
+knowledge
+• How text becomes embeddings
+• How vector databases retrieve chunks
+• How chunks become LLM context
+• How final answers are generated with 
+sources
+Every box in the RAG diagram will 
+become clear.
+1. KNOWLEDGE BASE CONSTRUCTION
+2. RETRIEVAL PIPELINE
+→ →
+→ →
+
+AI SEASON  THE PROBLEM AISEASON
+Can ChatGPT Answer This Correctly?
+A customer asks:
+Ask:
+“I bought headphones 12 days ago, opened the packaging, and I 
+am a premium member. Can I return them?”
+• Does the model know the company policy?
+• Does it know the purchase date?
+• Does it know the membership status?
+• Can it cite the exact source?
+
+AI SEASON  LIMITATIONS AISEASON
+Why LLM Alone Is Not Enough
+The LLM needs the right context.
+An LLM can: But it cannot automatically know:
+• generate fluent language
+• use learned patterns
+• answer from provided context
+LLM Alone → Generic Answer
+• private company policies
+• newly updated documents
+• user-specific records
+• exact source references
+LLM  Correct Context → Grounded Answer
+
+AI SEASON  THE ARCHITECTURE AISEASON
+The RAG System: Two Pipelines
+1. KNOWLEDGEBASE CONSTRUCTION INGESTION PIPELINE
+2. RETRIEVAL PIPELINE
+→ → → → →
+→ → → → →
+10M tokens) 5K tokens)
+Retriever
+LLM
+"""
+Chunk 1 Text
+ Chunk 2 
+Text
+ Chunk 3 
+Text
+Questio
+n"""
+
+AI SEASON  STEP 1 INGESTION AISEASON
+Step 1: Source Documents + File Conversion
+Real knowledge sources are messy:
+↓
+↓
+• PDF files
+• DOCX files
+• TXT files
+• websites
+• FAQs
+• internal policies
+First step:
+ Convert them into clean text.
+
+AI SEASON  STEP 2 LOADING AISEASON
+Step 2: Load Documents
+After extraction, we load processed text.
+We check:
+Main idea:
+ Documents become the knowledge base.
+• file name
+• character count
+• text preview
+• source metadata
+File Loader
+Reads directory and ingests txt 
+files.
+Document Preview
+File: policy.txt | Chars: 12,450
+"Returns are accepted within 30 days..."
+Document Preview
+File: faq.txt | Chars: 4,120
+"Standard shipping takes 3-5 days..."
+
+AI SEASON  STEP 3 CHUNKING AISEASON
+Important: Bad chunks create bad retrieval.
+Step 3: Chunking
+Large documents are split into smaller chunks.
+Why?
+Too Small
+"Premium members can return items..."
+"...if the packaging is unopened."
+Missing context.
+Too Large
+"Welcome to our store. Our CEO founded this in 1999. We 
+sell electronics. Premium members can return items if 
+unopened. Our shipping partners are fast. Headphones 
+have a 1 year warranty."
+Noisy context.
+Balanced
+"Return Policy: Premium members can return 
+items within 30 days if the packaging is 
+unopened. Headphones are subject to this 
+policy."
+Useful retrieval.
+• easier retrieval
+• less irrelevant content
+• fits model context window
+• better source tracking
+
+AI SEASON  STEP 4 EMBEDDINGS AISEASON
+Step 4: Embeddings
+Embedding means:
+Similar meanings create nearby vectors.
+Example:
+Text
+→
+Embedding Model
+→
+Vector
+• “course feeˮ
+• “program costˮ
+• “how much do I pay?ˮ
+“course 
+feeˮ
+“program costˮ
+“how much do I 
+pay?ˮ
+“refund 
+policyˮ
+“instructors
+ˮ
+
+AI SEASON  STEP 5 VECTOR DB AISEASON
+Step 5: Store in Vector Database
+A vector database stores:
+It helps retrieve chunks by meaning.
+↓
+• embeddings
+• original chunks
+• source metadata
+• chunk IDs
+Popular options:
+Chroma, Qdrant, Pinecone, pgvector
+Vector Database
+
+AI SEASON  THE SEARCH AISEASON
+Now the User Asks a Question
+When the user asks:
+The system must:
+2. RETRIEVAL PIPELINE ACTIVATION
+“Can I return opened headphones after 12 days?”
+• embed the question
+• search the vector DB
+• retrieve relevant chunks
+• pass them to the LLM
+↓
+↓
+↓
+↓
+Retriever
+
+AI SEASON  STEP 6 RETRIEVAL AISEASON
+Step 6: Query Embedding + Retriever
+The user question also becomes a vector.
+Then returns:
+Top-K relevant chunks
+Retriever compares:
+Query vector ↔ Stored chunk vectors
+→
+Quer
+y
+Retriever
+
+AI SEASON  STEP 7 GENERATION AISEASON
+Step 7: Context Goes to the LLM
+Retrieved chunks are not the final answer.
+They become context inside the prompt.
+Then the LLM generates the final answer.
+↓
+↓
+↓
+Prompt contains:
+Groq LLM API
+• system instruction
+• retrieved context
+• user question
+• answer rules
+
+AI SEASON  LIVE DEMO AISEASON
+Full RAG Pipeline Run
+Now we run everything together:
+Pipeline Ready
+Load 
+documents
+Retrieve 
+chunks
+Convert and clean 
+text
+Build prompt
+Chunk 
+documents
+Call LLM
+Create embeddings Show answer
+Store in vector 
+DB
+→ →
+→ →Search
+
+AI SEASON  TESTING AISEASON
+Test the system:
+RAG Can Still Fail Main lesson:
+RAG reduces hallucination, but does not magically remove all 
+errors.
+Ask something not in the docs. Does it 
+hallucinate or politely decline?
+What happens if we retrieve 1 chunk vs 20 
+chunks? Missed context vs Token limit)
+Also try bad chunking. See how prompt 
+instructions control knowledge leakage.
+Answer not found Top-K change Weak vs strong prompt
+
+AI SEASON  THE FUTURE AISEASON
+Beyond Basic RAG
+Main idea:
+ Basic RAG is the foundation. Modern systems 
+upgrade the pipeline.
+Production systems improve using:
+↓
+↓
+↓
+↓
+• better chunking
+• semantic chunking
+• hybrid search
+• multi-query retrieval
+• reranking
+• multimodal RAG
+• agentic RAG
+• GraphRAG
+• context engineering
+
+AI SEASON  PROJECT AISEASON
+Final Project: AI Season Knowledge Assistant
+At the end, we apply the same pipeline to AI Season data.
+The assistant will:
+• answer from AI Season documents
+• retrieve relevant chunks
+• show sources
+• use Groq or mock mode
+• say “not foundˮ when context is missing
+
+AI SEASON  RECAP AISEASON
+Final Recap
+Ingestion → Storage → Retrieval → Generation
+AI engineering is context engineering.
+Today you learned:
+• LLMs need the right context
+• documents must be converted and loaded
+• chunks preserve searchable meaning
+• embeddings convert text into vectors
+• vector DB retrieves relevant chunks
+• prompts send context to the LLM
+• RAG answers with evidence
+• modern systems improve this pipeline
+
+AI SEASON
+Multi-Modal Agents
+Unlocking the Future of Uniﬁed AI Reasoning
+Abdul Rahman Azam
+Founder, AI Season
+
+The Core Question
+"If LLM could only understand text, how would it analyze an 
+image, a PDF, or a voice message?"
+Traditional Large Language Models (LLMs) are 
+text-constrained. Humans, however, experience the world 
+through multiple channels.
+• Input: Images, Audio, Video, Docs
+• Processing: Uniﬁed Reasoning
+Beyond Text: The Modality Gap
+AI SEASON
+
+A modality is simply a type of information or sensory channel. 
+It is a category of input or output data in LLMs. 
+Text & PDFs
+Code, Reports, Books
+Vision
+Images, Charts, Maps
+Audio
+Speech, Music, Noise
+Temporal
+Video, Motion, LiDAR
+Structured
+T ables, Sensor Data
+Multimodal
+The Fusion of All
+What is a Modality?
+AI SEASON
+
+Why Multi-Modal?
+Case Study: Healthcare
+A doctor doesn't just read a text note. They process:
+A Multimodal Agent combines these signals for a 10x 
+more accurate diagnosis.
+• X-ray Imagery
+• Blood Reports (T ables)
+• Patient Speech (T one/Stress)
+• Medical History (T ext)
+Healthcare
+Doctors don't just read text. 
+They analyze X-rays, review 
+blood reports, and listen to 
+patient speech simultaneously.
+Self-Driving Cars
+Autonomous navigation requires 
+real-time synthesis of Cameras, 
+LiDAR, GPS, Speed telemetry, 
+and Radar data.
+Customer Support
+A customer might upload a 
+screenshot of an error, send a 
+voice complaint, and write a text 
+description.
+Why Do We Need Multimodal AI?
+Because real-world data isn't only text.
+AI SEASON
+
+Feature Traditional AI Multimodal AI
+Inputs Single (T ext Only) Multiple (Any Data)
+Understanding Limited / Semantic only Rich / Context-Aware
+Architecture Separate models per task One uniﬁed reasoning core
+Output T ext / Classiﬁcation Images, Actions, Reasoning
+Traditional vs Multimodal AI
+AI SEASON
+
+System Architecture
+AI SEASON
+
+Important: The LLM doesn't see pixels; it sees the Embeddings created by these Encoders.
+Deﬁnition: Encoders are translators that convert raw, unstructured data (pixels, sound waves) into vectors 
+(embeddings) that an LLM can understand.
+Vision
+ViT (Vision Transformer), CLIP 
+Encoder
+Audio
+Whisper, Wav2Vec, Audio-MAE
+Video
+VideoMAE, TimeSformer 
+(T emporal Reasoning)
+What are Encoders?
+AI SEASON
+
+How does the AI know an image of a Cat is the same as the 
+word "Cat"?
+Contrastive learning forces matching pairs to become 
+similar vectors in a high-dimensional map.
+Shared Embedding Space
+AI SEASON
+
+Both inputs become similar vectors in the latent space. This conceptual 
+alignment is what allows the LLM to connect and reason across completely 
+different modalities.
+Visual Modality
+An image of a cat is encoded.
+T ext Modality
+The text string "Cat" is encoded.
+Shared Embedding Space
+AI SEASON
+
+Real-World Reasoning
+Self-Driving T echnology
+One modality is never enough for safety.
+The agent reasons across all 4 simultaneously.
+• Cameras: Visual Context
+• LiDAR: Depth/Mapping
+• GPS: Localization
+• Radar: Speed/Distance
+AI SEASON
+
+The Fusion Engine
+A VLM is the modern standard for AI. It directly 
+combines high-fidelity Vision networks with 
+advanced Language logic, allowing for natural 
+conversations about visual content.
+Leading Models
+• OpenAI GPT4.1 & GPT5 Vision
+• Google: Gemini Pro & Ultra
+• Anthropic: Claude 3 Vision
+• Meta: Llama Vision
+• Alibaba: Qwen-VL
+Vision Language Models (VLMs)
+AI SEASON
+
+Audio Processing
+Models like OpenAI Whisper, SpeechLM, and 
+SeamlessM4T handle spoken language.
+Pipeline:
+Speech → Text → Reasoning → Response
+The Video Challenge
+Video = Thousands of images + Audio + Time.
+This introduces the need for Temporal 
+Reasoning: understanding motion, recognizing 
+actions across frames, and detecting complex 
+events over time.
+Audio & Video Understanding
+AI SEASON
+
+PDFs are not just text files.
+They contain complex structures like tables, images, 
+charts, headers, footers, and distinct layouts that 
+standard text parsers fail to comprehend.
+The Pipeline:
+Use Cases: Invoice extraction, Resume parsing, Contract 
+analysis, and processing medical reports.
+Document AI & OCR
+AI SEASON
+
+
+
+1. Storage
+Vector databases store text 
+alongside Image, Audio, Video, 
+and PDF embeddings.
+2. Query
+User submits a query, which 
+can be text, an uploaded 
+image, or an audio clip.
+3. Retrieval
+System fetches related 
+multimedia chunks Tables, 
+Charts, Audio fragments).
+4. Generation
+LLM synthesizes context 
+across all modalities to 
+produce the final grounded 
+answer.
+Multimodal RAG Pipeline
+Extending Retrieval-Augmented Generation beyond just text.
+AI SEASON
+
+Perception T ools Data & Web Compute & Action
+• Image API
+• OCR Engine
+• Speech Recognizer
+• Camera Integration
+• Web Search
+• Browser 
+Automation• Database Queries
+• Maps & GPS
+• Python Runtime
+• Calculator
+• Calendar Sync
+• Email 
+Automation
+Automatic T ool Calling
+Agents act autonomously by leveraging specific tools for specific tasks.
+AI SEASON
+
+Action Beyond Words
+Agents don't just "talk"; they Act using tools:
+• OCR T ool: Read receipts
+• Image T ool: Edit or generate
+• Search T ool: Look up live data
+• Python T ool: Run math/analysis
+The Multimodal Agent
+AI SEASON
+
+Questions?
+Thank you for your 
+participation!
+Abdul Rahman Azam
+aiseason.tech
+
